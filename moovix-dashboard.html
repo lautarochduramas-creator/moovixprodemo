@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOOVIX PRO Dashboard - DEMO</title>
+
+    <style>
+        :root {
+            --color-background: #0f0f0f;
+            --color-surface: #1a1a1a;
+            --color-primary: #C4A962;
+            --color-secondary: #333;
+            --color-text-primary: #e0e0e0;
+            --color-text-secondary: #888;
+            --color-accent-success: #4CAF50;
+            --color-accent-warning: #FFC107;
+            --color-accent-error: #F44336;
+            --border-radius-card: 18px;
+            --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-family-main);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            margin: 0;
+        }
+        
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 90px;
+        }
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .logo {
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--color-primary);
+        }
+
+        .demo-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .content-wrapper {
+            padding: 20px;
+        }
+        
+        .view {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .card {
+            background: linear-gradient(145deg, var(--color-surface), #111);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--border-radius-card);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: var(--color-text-secondary);
+        }
+        
+        .info-value {
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 12px;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: #000;
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .btn-small {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            padding: 8px;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--color-accent-error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .text-warning { color: var(--color-accent-warning); }
+        .text-success { color: var(--color-accent-success); }
+        .text-primary { color: var(--color-primary); }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 0;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-item.active { color: var(--color-primary); }
+        .nav-icon { font-size: 24px; }
+        .nav-label { font-size: 12px; font-weight: 500; }
+
+        .order-card {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            animation: slideIn 0.5s ease;
+        }
+
+        .order-card:hover { transform: translateX(4px); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--color-text-secondary);
+            padding: 20px;
+        }
+
+        .error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--color-accent-error);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--color-accent-success);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .form-group { margin-bottom: 16px; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--color-surface);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--color-text-primary);
+            font-size: 16px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .level-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .level-black {
+            background: linear-gradient(135deg, #434343 0%, #000000 100%);
+            color: var(--color-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* TRACKING EN TIEMPO REAL */
+        .tracking-container {
+            position: relative;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tracking-map {
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .truck-icon {
+            position: absolute;
+            font-size: 32px;
+            transition: all 1s ease-in-out;
+            animation: pulse 2s infinite;
+        }
+
+        .route-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-primary), transparent);
+            top: 50%;
+        }
+
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .timeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-step.active .timeline-icon {
+            background: var(--color-primary);
+            transform: scale(1.2);
+        }
+
+        .timeline-step.completed .timeline-icon {
+            background: var(--color-accent-success);
+        }
+
+        .timeline-label {
+            font-size: 11px;
+            color: var(--color-text-secondary);
+        }
+
+        .timeline-step.active .timeline-label {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .eta-display {
+            background: linear-gradient(135deg, rgba(196, 169, 98, 0.1), rgba(196, 169, 98, 0.05));
+            border: 1px solid var(--color-primary);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .eta-time {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .eta-label {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .driver-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), #8b7355);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .live-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent-error);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            margin-right: 6px;
+        }
+
+        .notification-item {
+            animation: slideIn 0.5s ease;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .notification-item:hover {
+            transform: translateX(4px);
+        }
+
+        .notification-item.unread {
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .notification-item.read {
+            opacity: 0.6;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), #d4af37);
+            transition: width 0.5s ease;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: var(--color-secondary);
+            border: none;
+            border-radius: 20px;
+            color: var(--color-text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab.active {
+            background: var(--color-primary);
+            color: #000;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-entregado {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--color-accent-success);
+        }
+
+        .status-en-camino {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: var(--color-accent-warning);
+        }
+
+        .status-cancelado {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--color-accent-error);
+        }
+
+        /* MODAL DE CONTACTO */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            border-radius: var(--border-radius-card);
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--color-text-primary);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-option {
+            background: linear-gradient(145deg, var(--color-surface), #111);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .contact-option:hover {
+            transform: translateY(-2px);
+            border-color: var(--color-primary);
+        }
+
+        .contact-option-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .contact-icon {
+            font-size: 32px;
+        }
+
+        .contact-option-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .contact-option-desc {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin: 0;
+            padding-left: 44px;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--color-primary);
+            animation: pulseRing 2s infinite;
+            opacity: 0;
+        }
+
+        @keyframes pulseRing {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div style="display: flex; align-items: center;">
+                <div class="logo">MOOVIX PRO</div>
+                <span class="demo-badge">DEMO</span>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="icon-btn" id="contact-btn" style="position: relative;">
+                    💬
+                    <div class="pulse-ring"></div>
+                </button>
+                <button type="button" class="icon-btn" data-view="notifications">
+                    <span id="notification-count" class="badge">5</span>🔔
+                </button>
+                <button type="button" class="icon-btn" data-view="profile">👤</button>
+            </div>
+        </header>
+
+        <main class="content-wrapper">
+            <!-- ==================== MÓDULO 1: INICIO ==================== -->
+            <section class="view active" id="homeView">
+                <h1 id="welcome-title">¡Hola, Kiosco El Sol!</h1>
+                <p>Bienvenido a MOOVIX PRO</p>
+                
+                <article class="card">
+                    <div class="card-header">
+                        <span class="info-label">TUS PUNTOS MOOVIX</span>
+                        <div id="user-level"><span class="level-badge level-black">⭐ BLACK</span></div>
+                    </div>
+                    <div id="points-value" class="text-primary" style="font-size: 36px; font-weight: bold;">12,450</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 8px;">
+                        6,550 puntos para nivel PLATINUM
+                    </p>
+                </article>
+                
+                <article class="card">
+                    <h2 class="card-title">🤖 Recomendación IA</h2>
+                    <p id="ai-recommendation">📈 ¡Atención! El consumo de Pepsi Black 2.25L ha aumentado un 35% esta semana. Para evitar quiebre de stock, recomendamos reponer antes del Viernes 18 de Octubre.</p>
+                </article>
+                
+                <!-- TRACKING EN TIEMPO REAL -->
+                <article class="card" id="tracking-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h2 class="card-title">📦 Pedido en Camino</h2>
+                        <span style="font-size: 12px; color: var(--color-text-secondary);">
+                            <span class="live-indicator"></span>EN VIVO
+                        </span>
+                    </div>
+                    
+                    <div class="eta-display">
+                        <div class="eta-time" id="eta-time">12 min</div>
+                        <div class="eta-label">Tiempo estimado de llegada</div>
+                    </div>
+
+                    <div class="tracking-map">
+                        <div class="route-line" style="width: 70%; left: 0;"></div>
+                        <div class="truck-icon" id="truck-icon" style="left: 10%; top: 45%;">🚛</div>
+                        <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 32px;">📍</div>
+                    </div>
+
+                    <div class="driver-info">
+                        <div class="driver-avatar">👨</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700;">Miguel Rodríguez</div>
+                            <div style="font-size: 12px; color: var(--color-text-secondary);">Conductor • ⭐ 4.9</div>
+                        </div>
+                        <button class="btn btn-secondary btn-small">📞 Llamar</button>
+                    </div>
+
+                    <div class="status-timeline">
+                        <div class="timeline-step completed">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-label">Preparado</div>
+                        </div>
+                        <div class="timeline-step completed">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-label">En ruta</div>
+                        </div>
+                        <div class="timeline-step active">
+                            <div class="timeline-icon">🚛</div>
+                            <div class="timeline-label">Por llegar</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-icon">📦</div>
+                            <div class="timeline-label">Entregado</div>
+                        </div>
+                    </div>
+
+                    <div class="info-row" style="margin-top: 20px;">
+                        <span class="info-label">Pedido</span>
+                        <span class="info-value">#0847</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contenido</span>
+                        <span class="info-value">4x Pepsi Black 2.25L</span>
+                    </div>
+                </article>
+                
+                <article class="card">
+                    <h2 class="card-title">📦 Hacer Nuevo Pedido</h2>
+                    <form id="new-order-form">
+                        <div class="form-group">
+                            <label class="form-label">Producto</label>
+                            <select id="product-select" class="form-select" required>
+                                <option value="">Selecciona un producto...</option>
+                                <option value="PB225">Pepsi Black 2.25L - $5,500 (Stock: 96)</option>
+                                <option value="P7L15">7up Lima 1.5L - $4,800 (Stock: 80)</option>
+                                <option value="CC2L">Coca-Cola 2L - $4,200 (Stock: 120)</option>
+                                <option value="SP15">Sprite 1.5L - $3,900 (Stock: 65)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" id="quantity-input" class="form-input" min="1" value="1" required>
+                        </div>
+                        <div id="order-message"></div>
+                        <button type="submit" class="btn btn-primary">🛒 Realizar Pedido</button>
+                    </form>
+                </article>
+            </section>
+
+            <!-- ==================== MÓDULO 2: PEDIDOS ==================== -->
+            <section class="view" id="pedidosView">
+                <h2 class="section-title"><span>📦</span> Historial de Pedidos</h2>
+                
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="todos">Todos</button>
+                    <button class="filter-tab" data-filter="en_camino">En camino</button>
+                    <button class="filter-tab" data-filter="entregado">Entregados</button>
+                    <button class="filter-tab" data-filter="cancelado">Cancelados</button>
+                </div>
+
+                <div id="order-history-list"></div>
+            </section>
+            
+            <!-- ==================== MÓDULO 3: ANÁLISIS ==================== -->
+            <section class="view" id="analisisView">
+                <h2 class="section-title"><span>📊</span> Análisis de Consumo</h2>
+                
+                <article class="card">
+                    <h3 class="card-title">Estadísticas del Mes</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-orders">28</div>
+                            <div class="stat-label">Pedidos</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-revenue">$156.8K</div>
+                            <div class="stat-label">Ingresos</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="stat-avg">$5.6K</div>
+                            <div class="stat-label">Promedio</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value text-success" id="stat-growth">+15%</div>
+                            <div class="stat-label">Crecimiento</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3 class="card-title">Top Productos</h3>
+                    <div id="products-list">
+                        <div class="product-item">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 32px;">🥤</div>
+                                <div>
+                                    <strong>Pepsi Black 2.25L</strong><br>
+                                    <small style="color: var(--color-text-secondary);">12 pedidos este mes</small>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: var(--color-primary); font-weight: bold;">$66,000</div>
+                                <small style="color: var(--color-text-secondary);">42% del total</small>
+                            </div>
+                        </div>
+                        <div class="product-item">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 32px;">🍋</div>
+                                <div>
+                                    <strong>7up Lima 1.5L</strong><br>
+                                    <small style="color: var(--color-text-secondary);">8 pedidos este mes</small>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: var(--color-primary); font-weight: bold;">$38,400</div>
+                                <small style="color: var(--color-text-secondary);">24% del total</small>
+                            </div>
+                        </div>
+                        <div class="product-item">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 32px;">🥤</div>
+                                <div>
+                                    <strong>Coca-Cola 2L</strong><br>
+                                    <small style="color: var(--color-text-secondary);">6 pedidos este mes</small>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: var(--color-primary); font-weight: bold;">$25,200</div>
+                                <small style="color: var(--color-text-secondary);">16% del total</small>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3 class="card-title">Consumo Últimos 6 Meses</h3>
+                    <div style="height: 200px; display: flex; align-items: flex-end; justify-content: space-around; gap: 8px; margin-top: 20px;">
+                        <div style="flex: 1; background: var(--color-primary); height: 60%; border-radius: 4px 4px 0 0; position: relative;">
+                            <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-text-secondary);">May</div>
+                        </div>
+                        <div style="flex: 1; background: var(--color-primary); height: 75%; border-radius: 4px 4px 0 0; position: relative;">
+                            <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-text-secondary);">Jun</div>
+                        </div>
+                        <div style="flex: 1; background: var(--color-primary); height: 85%; border-radius: 4px 4px 0 0; position: relative;">
+                            <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-text-secondary);">Jul</div>
+                        </div>
+                        <div style="flex: 1; background: var(--color-primary); height: 70%; border-radius: 4px 4px 0 0; position: relative;">
+                            <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-text-secondary);">Ago</div>
+                        </div>
+                        <div style="flex: 1; background: var(--color-primary); height: 90%; border-radius: 4px 4px 0 0; position: relative;">
+                            <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-text-secondary);">Sep</div>
+                        </div>
+                        <div style="flex: 1; background: var(--color-primary); height: 100%; border-radius: 4px 4px 0 0; position: relative;">
+                            <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--color-text-secondary);">Oct</div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+            
+            <!-- ==================== MÓDULO 4: MOOVIX SHOP (BENEFICIOS) ==================== -->
+            <section class="view" id="beneficiosView">
+                <h2 class="section-title"><span>🎁</span> MOOVIX SHOP</h2>
+                
+                <article class="card">
+                    <div style="text-align: center; padding: 20px 0;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">⭐</div>
+                        <h3 style="margin: 0 0 8px 0;">Nivel BLACK</h3>
+                        <div class="text-primary" style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">12,450 pts</div>
+                        <p style="color: var(--color-text-secondary); font-size: 14px; margin: 0;">Puntos disponibles para canjear</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.02); padding: 12px; border-radius: 8px; margin-top: 16px;">
+                        <div style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 8px;">
+                            💡 Gana más puntos:
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.6;">
+                            • $1,000 de compra = <strong class="text-primary">10 puntos</strong><br>
+                            • Pago puntual = <strong class="text-primary">+100 pts/mes</strong><br>
+                            • Recomendar cliente = <strong class="text-primary">+1,000 pts</strong><br>
+                            • Encuesta satisfacción = <strong class="text-primary">+200 pts</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <h3 style="font-size: 18px; font-weight: 700; margin: 24px 0 16px 0; color: var(--color-text-secondary);">🛍️ Beneficios Disponibles</h3>
+
+                <!-- Beneficio 3,000 pts -->
+                <article class="card" style="border-left: 4px solid var(--color-primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">💳</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Descuento 5% exclusivo</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Aplica para pedidos superiores a $500,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="text-primary" style="font-size: 18px; font-weight: bold;">3,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="redeemBenefit('Descuento 5%', 3000)">🔓 Canjear Ahora</button>
+                </article>
+
+                <!-- Beneficio 5,000 pts -->
+                <article class="card" style="border-left: 4px solid var(--color-primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">⚡</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Prioridad en reprogramación</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Cambios en entrega en menos de 24h
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="text-primary" style="font-size: 18px; font-weight: bold;">5,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="redeemBenefit('Prioridad Reprogramación', 5000)">🔓 Canjear Ahora</button>
+                </article>
+
+                <!-- Beneficio 8,000 pts -->
+                <article class="card" style="border-left: 4px solid var(--color-primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">📊</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Asesoría personalizada</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Consultoría con analista Moovix vía Zoom
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="text-primary" style="font-size: 18px; font-weight: bold;">8,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="redeemBenefit('Asesoría Personalizada', 8000)">🔓 Canjear Ahora</button>
+                </article>
+
+                <!-- Beneficio 12,000 pts -->
+                <article class="card" style="border-left: 4px solid var(--color-primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">🎟️</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Vouchers de primera marca</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Productos exclusivos de marcas top
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="text-primary" style="font-size: 18px; font-weight: bold;">12,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="redeemBenefit('Vouchers Primera Marca', 12000)">🔓 Canjear Ahora</button>
+                </article>
+
+                <!-- Beneficio 15,000 pts -->
+                <article class="card" style="border-left: 4px solid #888; opacity: 0.6;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">🚀</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Acceso anticipado</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                48h antes a promociones y lanzamientos
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: bold; color: #888;">15,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" disabled>🔒 Puntos Insuficientes</button>
+                </article>
+
+                <!-- Beneficio 20,000 pts -->
+                <article class="card" style="border-left: 4px solid #888; opacity: 0.6;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">🎫</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Eventos exclusivos</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Networking y charlas con expertos
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: bold; color: #888;">20,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" disabled>🔒 Puntos Insuficientes</button>
+                </article>
+
+                <!-- Beneficio 25,000 pts -->
+                <article class="card" style="border-left: 4px solid #888; opacity: 0.6;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">🚚</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Servicio express gratuito</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Entregas sin costo adicional por 1 mes
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: bold; color: #888;">25,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" disabled>🔒 Puntos Insuficientes</button>
+                </article>
+
+                <!-- Beneficio 40,000 pts -->
+                <article class="card" style="border-left: 4px solid #888; opacity: 0.6;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">✈️</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Viaje VIP (1 vez al año)</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Tour y experiencias exclusivas
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: bold; color: #888;">40,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" disabled>🔒 Puntos Insuficientes</button>
+                </article>
+
+                <!-- Beneficio 50,000 pts - DELUXE -->
+                <article class="card" style="border-left: 4px solid #888; opacity: 0.6; background: linear-gradient(145deg, #1a1a1a, #0a0a0a);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 20px; margin-bottom: 4px;">👑</div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 16px;">Membresía MOOVIX DELUXE</h4>
+                            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">
+                                Eventos, regalos y atención prioritaria 24/7
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 18px; font-weight: bold; color: #888;">50,000 pts</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" disabled>🔒 Puntos Insuficientes</button>
+                </article>
+
+                <!-- Información adicional -->
+                <article class="card" style="background: rgba(196, 169, 98, 0.05); border: 1px solid rgba(196, 169, 98, 0.2);">
+                    <h4 style="margin: 0 0 12px 0; font-size: 14px; color: var(--color-primary);">ℹ️ Condiciones especiales:</h4>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8; color: var(--color-text-secondary);">
+                        <li>Los puntos no vencen mientras estés en nivel Black</li>
+                        <li>Nivel Black se renueva cada 12 meses</li>
+                        <li>Consulta puntos en tiempo real desde la app</li>
+                        <li>Notificaciones por WhatsApp de promociones</li>
+                    </ul>
+                </article>
+            </section>
+
+            <!-- ==================== MÓDULO 5: NOTIFICACIONES ==================== -->
+            <section class="view" id="notificationsView">
+                <h2 class="section-title"><span>🔔</span> Notificaciones</h2>
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                    <button class="btn btn-primary btn-small" onclick="markAllAsRead()">✓ Marcar todas como leídas</button>
+                    <button class="btn btn-secondary btn-small" onclick="clearNotifications()">🗑️ Limpiar</button>
+                </div>
+
+                <div id="notifications-list">
+                    <div class="card notification-item unread" data-id="1">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <p style="margin: 0;"><strong>🚛 Tu pedido está a 2 cuadras</strong></p>
+                            <button class="btn btn-secondary btn-small" onclick="markAsRead(1)" style="padding: 4px 8px; font-size: 12px;">Leído</button>
+                        </div>
+                        <p style="margin: 0 0 8px 0;">Miguel está muy cerca. Prepárate para recibir tu pedido #0847.</p>
+                        <small style="color: var(--color-text-secondary);">Hace 2 minutos</small>
+                    </div>
+
+                    <div class="card notification-item unread" data-id="2">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <p style="margin: 0;"><strong>🎉 ¡Felicidades! Subiste de nivel</strong></p>
+                            <button class="btn btn-secondary btn-small" onclick="markAsRead(2)" style="padding: 4px 8px; font-size: 12px;">Leído</button>
+                        </div>
+                        <p style="margin: 0 0 8px 0;">Has alcanzado el nivel BLACK. Ahora tienes 20% de descuento en todos tus pedidos.</p>
+                        <small style="color: var(--color-text-secondary);">Hace 1 hora</small>
+                    </div>
+
+                    <div class="card notification-item unread" data-id="3">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <p style="margin: 0;"><strong>💰 Puntos acreditados</strong></p>
+                            <button class="btn btn-secondary btn-small" onclick="markAsRead(3)" style="padding: 4px 8px; font-size: 12px;">Leído</button>
+                        </div>
+                        <p style="margin: 0 0 8px 0;">Se han agregado 120 puntos a tu cuenta por tu último pedido.</p>
+                        <small style="color: var(--color-text-secondary);">Hace 3 horas</small>
+                    </div>
+
+                    <div class="card notification-item read" data-id="4">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <p style="margin: 0;"><strong>📊 Nueva recomendación IA</strong></p>
+                            <button class="btn btn-secondary btn-small" onclick="markAsRead(4)" style="padding: 4px 8px; font-size: 12px;" disabled>Leído</button>
+                        </div>
+                        <p style="margin: 0 0 8px 0;">Tenemos una nueva recomendación de reposición basada en tu consumo.</p>
+                        <small style="color: var(--color-text-secondary);">Hace 1 día</small>
+                    </div>
+
+                    <div class="card notification-item read" data-id="5">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <p style="margin: 0;"><strong>🎁 Nuevo beneficio disponible</strong></p>
+                            <button class="btn btn-secondary btn-small" onclick="markAsRead(5)" style="padding: 4px 8px; font-size: 12px;" disabled>Leído</button>
+                        </div>
+                        <p style="margin: 0 0 8px 0;">Ya puedes canjear el descuento del 5% con tus puntos acumulados.</p>
+                        <small style="color: var(--color-text-secondary);">Hace 2 días</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== MÓDULO 6: POWER BI ==================== -->
+            <section class="view" id="powerbiView">
+                <h2 class="section-title"><span>📊</span> Exportar a Power BI</h2>
+                
+                <article class="card">
+                    <h3 class="card-title">Datos de Ventas</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 14px;">Exporta los datos completos para visualización en Power BI. Los datos incluyen tienda, productos, cantidades, precios y totales.</p>
+                    <button id="export-powerbi" class="btn btn-primary">📥 Generar Datos Power BI</button>
+                </article>
+
+                <article class="card" id="powerbi-data" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 class="card-title" style="margin: 0;">Datos Exportados</h3>
+                        <button id="copy-powerbi" class="btn btn-secondary btn-small">📋 Copiar JSON</button>
+                    </div>
+                    <div id="powerbi-content"></div>
+                </article>
+            </section>
+
+            <!-- ==================== MÓDULO 7: PERFIL ==================== -->
+            <section class="view" id="profileView">
+                <h2 class="section-title"><span>👤</span> Mi Perfil</h2>
+                
+                <article class="card">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--color-primary), #8b7355); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+                            🏪
+                        </div>
+                        <h3 style="margin: 0 0 4px 0;">Kiosco El Sol</h3>
+                        <p style="margin: 0; color: var(--color-text-secondary); font-size: 14px;">Cliente desde Enero 2024</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="info-label">Dirección</span>
+                        <span class="info-value">Av. Cazón 1234, Tigre</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Teléfono</span>
+                        <span class="info-value">+54 11 2345-6789</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">kiosco@elsol.com</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Nivel</span>
+                        <span class="info-value text-primary">⭐ BLACK</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Puntos</span>
+                        <span class="info-value text-primary">12,450</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Total Pedidos</span>
+                        <span class="info-value">28</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Gasto Total</span>
+                        <span class="info-value">$156,800</span>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3 class="card-title">⚙️ Configuración</h3>
+                    <button class="btn btn-secondary">🔔 Preferencias de Notificaciones</button>
+                    <button class="btn btn-secondary">📍 Direcciones de Entrega</button>
+                    <button class="btn btn-secondary">💳 Métodos de Pago</button>
+                    <button class="btn btn-secondary">🔒 Seguridad y Privacidad</button>
+                </article>
+
+                <article class="card" style="background: rgba(196, 169, 98, 0.05); border: 1px solid rgba(196, 169, 98, 0.2);">
+                    <h3 class="card-title">📱 Modo DEMO</h3>
+                    <p style="color: var(--color-text-secondary); font-size: 14px; margin-bottom: 16px;">
+                        Esta es una versión de demostración con datos simulados. Perfecto para presentaciones y pruebas.
+                    </p>
+                    <button class="btn btn-primary" onclick="location.reload()">🔄 Reiniciar Demo</button>
+                </article>
+
+                <button class="btn btn-secondary">🚪 Cerrar Sesión</button>
+            </section>
+        </main>
+
+        <!-- NAVEGACIÓN INFERIOR -->
+        <nav class="bottom-nav">
+            <button type="button" class="nav-item active" data-view="home">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Inicio</div>
+            </button>
+            <button type="button" class="nav-item" data-view="pedidos">
+                <div class="nav-icon">📦</div>
+                <div class="nav-label">Pedidos</div>
+            </button>
+            <button type="button" class="nav-item" data-view="analisis">
+                <div class="nav-icon">📊</div>
+                <div class="nav-label">Análisis</div>
+            </button>
+            <button type="button" class="nav-item" data-view="beneficios">
+                <div class="nav-icon">🎁</div>
+                <div class="nav-label">Shop</div>
+            </button>
+            <button type="button" class="nav-item" data-view="powerbi">
+                <div class="nav-icon">💾</div>
+                <div class="nav-label">Power BI</div>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MODAL DE CONTACTO -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">💬 Centro de Ayuda</h3>
+                <button class="close-modal" onclick="closeContactModal()">×</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <p style="color: var(--color-text-secondary); font-size: 14px; margin: 0;">
+                    Elige cómo quieres contactarnos:
+                </p>
+            </div>
+
+            <!-- Opción: Chatbot IA -->
+            <div class="contact-option" onclick="startAIChat()">
+                <div class="contact-option-header">
+                    <div class="contact-icon">🤖</div>
+                    <div>
+                        <h4 class="contact-option-title">Chatbot IA</h4>
+                    </div>
+                </div>
+                <p class="contact-option-desc">
+                    Asistente virtual disponible 24/7 para respuestas rápidas
+                </p>
+            </div>
+
+            <!-- Opción: Operador Humano -->
+            <div class="contact-option" onclick="startHumanChat()">
+                <div class="contact-option-header">
+                    <div class="contact-icon">👤</div>
+                    <div>
+                        <h4 class="contact-option-title">Operador Humano</h4>
+                    </div>
+                </div>
+                <p class="contact-option-desc">
+                    Habla con un asesor especializado • Tiempo de espera: ~2 min
+                </p>
+            </div>
+
+            <!-- Opción: Urgencia -->
+            <div class="contact-option" onclick="reportUrgency()" style="border-left: 4px solid var(--color-accent-error);">
+                <div class="contact-option-header">
+                    <div class="contact-icon">🚨</div>
+                    <div>
+                        <h4 class="contact-option-title">Emergencia</h4>
+                    </div>
+                </div>
+                <p class="contact-option-desc">
+                    Prioridad máxima • Atención inmediata para casos urgentes
+                </p>
+            </div>
+
+            <div style="margin-top: 20px; padding: 12px; background: rgba(255, 255, 255, 0.02); border-radius: 8px;">
+                <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0;">
+                    📞 También puedes llamarnos al: <strong style="color: var(--color-primary);">0800-MOOVIX</strong><br>
+                    📧 O enviarnos un email: <strong style="color: var(--color-primary);">soporte@moovix.com</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATOS DEMO ====================
+        let appState = {
+            points: 12450,
+            unreadNotifications: 3,
+            orders: [
+                {
+                    id: '0847',
+                    product: 'Pepsi Black 2.25L',
+                    quantity: 4,
+                    total: 22000,
+                    date: new Date().toISOString(),
+                    status: 'en_camino'
+                },
+                {
+                    id: '0821',
+                    product: '7up Lima 1.5L',
+                    quantity: 6,
+                    total: 28800,
+                    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'entregado'
+                },
+                {
+                    id: '0798',
+                    product: 'Pepsi Black 2.25L',
+                    quantity: 3,
+                    total: 16500,
+                    date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'entregado'
+                },
+                {
+                    id: '0776',
+                    product: 'Coca-Cola 2L',
+                    quantity: 5,
+                    total: 21000,
+                    date: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'entregado'
+                },
+                {
+                    id: '0755',
+                    product: '7up Lima 1.5L',
+                    quantity: 2,
+                    total: 9600,
+                    date: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'cancelado'
+                }
+            ]
+        };
+
+        // ==================== MÓDULO: TRACKING EN TIEMPO REAL ====================
+        let trackingInterval;
+        let currentETA = 12;
+        let truckPosition = 10;
+
+        function startTracking() {
+            const truckIcon = document.getElementById('truck-icon');
+            const etaTime = document.getElementById('eta-time');
+            
+            trackingInterval = setInterval(() => {
+                if (truckPosition < 85) {
+                    truckPosition += 2;
+                    truckIcon.style.left = truckPosition + '%';
+                }
+                
+                if (currentETA > 0 && Math.random() > 0.3) {
+                    currentETA--;
+                    etaTime.textContent = currentETA + ' min';
+                }
+                
+                if (truckPosition > 70) {
+                    document.querySelectorAll('.timeline-step')[2].classList.add('completed');
+                    document.querySelectorAll('.timeline-step')[2].classList.remove('active');
+                    document.querySelectorAll('.timeline-step')[3].classList.add('active');
+                }
+                
+                if (currentETA === 0) {
+                    clearInterval(trackingInterval);
+                    document.getElementById('tracking-card').innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px;">
+                            <div style="font-size: 64px; margin-bottom: 16px;">🎉</div>
+                            <h3 style="color: var(--color-accent-success); margin-bottom: 8px;">¡Pedido Entregado!</h3>
+                            <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Gracias por tu compra. Se han acreditado 120 puntos.</p>
+                            <button class="btn btn-primary" onclick="location.reload()">Ver nuevo tracking</button>
+                        </div>
+                    `;
+                }
+            }, 3000);
+        }
+
+        // ==================== MÓDULO: CENTRO DE CONTACTO ====================
+        document.getElementById('contact-btn').addEventListener('click', () => {
+            document.getElementById('contact-modal').classList.add('active');
+        });
+
+        function closeContactModal() {
+            document.getElementById('contact-modal').classList.remove('active');
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('contact-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'contact-modal') {
+                closeContactModal();
+            }
+        });
+
+        function startAIChat() {
+            closeContactModal();
+            alert('🤖 Conectando con el Chatbot IA de MOOVIX...\n\n¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?\n\n• Consultar pedidos\n• Información de productos\n• Estado de entregas\n• Programa de puntos\n\n(En producción, esto abriría un chat widget)');
+        }
+
+        function startHumanChat() {
+            closeContactModal();
+            
+            // Simulación de espera
+            const loadingMsg = alert('👤 Conectando con un operador humano...\n\n⏳ Por favor espera un momento...');
+            
+            setTimeout(() => {
+                alert('✅ Conectado con María González\n\n👋 ¡Hola! Soy María, tu asesora personal de MOOVIX. ¿En qué puedo ayudarte?\n\n📱 Chat disponible\n📞 Llamada disponible\n\n(En producción, esto abriría un chat en vivo con un operador real)');
+            }, 2000);
+        }
+
+        function reportUrgency() {
+            const confirmed = confirm('🚨 REPORTE DE URGENCIA\n\n¿Estás experimentando un problema urgente que requiere atención inmediata?\n\nEjemplos:\n• Pedido con productos en mal estado\n• Entrega muy retrasada\n• Problema crítico con facturación\n\n¿Deseas continuar?');
+            
+            if (confirmed) {
+                closeContactModal();
+                alert('🚨 URGENCIA REPORTADA\n\n✅ Tu caso ha sido marcado como prioritario\n📱 Un supervisor te contactará en menos de 5 minutos\n📞 Llamada entrante al: +54 11 2345-6789\n\nTicket: #URG-' + Math.floor(Math.random() * 10000) + '\n\n(En producción, esto alertaría al equipo de urgencias y abriría un ticket prioritario)');
+            }
+        }
+
+        // ==================== NAVEGACIÓN ====================
+        function showView(viewName) {
+            const targetViewId = viewName + 'View';
+            
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const targetView = document.getElementById(targetViewId);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+            
+            const targetNav = document.querySelector(`.nav-item[data-view="${viewName}"]`);
+            if (targetNav) {
+                targetNav.classList.add('active');
+            }
+            
+            if (viewName === 'pedidos') {
+                loadOrderHistory('todos');
+            }
+        }
+
+        document.querySelectorAll('[data-view]').forEach(button => {
+            button.addEventListener('click', () => {
+                showView(button.dataset.view);
+            });
+        });
+
+        // ==================== MÓDULO: PEDIDOS ====================
+        function loadOrderHistory(filter = 'todos') {
+            const orderHistoryList = document.getElementById('order-history-list');
+            
+            let filteredOrders = appState.orders;
+            if (filter !== 'todos') {
+                filteredOrders = appState.orders.filter(order => order.status === filter);
+            }
+            
+            if (filteredOrders.length === 0) {
+                orderHistoryList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>No hay pedidos con este filtro</p></div>';
+                return;
+            }
+            
+            orderHistoryList.innerHTML = filteredOrders.map(order => {
+                const date = new Date(order.date);
+                const formattedDate = date.toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' });
+                const formattedTime = date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                
+                let statusBadge = '';
+                if (order.status === 'entregado') {
+                    statusBadge = '<span class="status-badge status-entregado">Entregado</span>';
+                } else if (order.status === 'en_camino') {
+                    statusBadge = '<span class="status-badge status-en-camino">En camino</span>';
+                } else if (order.status === 'cancelado') {
+                    statusBadge = '<span class="status-badge status-cancelado">Cancelado</span>';
+                }
+                
+                return `
+                    <article class="card order-card">
+                        <div class="card-header">
+                            <div>
+                                <div style="font-weight: bold;">Pedido #${order.id}</div>
+                                <div style="font-size: 14px; color: var(--color-text-secondary);">${formattedDate} - ${formattedTime}</div>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Producto</span>
+                            <span class="info-value">${order.product}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Cantidad</span>
+                            <span class="info-value">${order.quantity} unidades</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Total</span>
+                            <span class="info-value text-primary">${order.total.toLocaleString('es-AR')}</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // Filtros de pedidos
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                loadOrderHistory(this.dataset.filter);
+            });
+        });
+
+        // ==================== MÓDULO: HACER PEDIDO ====================
+        document.getElementById('new-order-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const productSelect = document.getElementById('product-select');
+            const quantity = parseInt(document.getElementById('quantity-input').value);
+            const orderMessage = document.getElementById('order-message');
+            
+            if (!productSelect.value) {
+                orderMessage.innerHTML = '<div class="error">Por favor selecciona un producto</div>';
+                return;
+            }
+            
+            const productName = productSelect.options[productSelect.selectedIndex].text.split(' - ')[0];
+            const pointsEarned = quantity * 30;
+            
+            // Actualizar puntos
+            appState.points += pointsEarned;
+            document.getElementById('points-value').textContent = appState.points.toLocaleString('es-AR');
+            
+            // Agregar nuevo pedido
+            const newOrder = {
+                id: '0' + (Math.floor(Math.random() * 900) + 100),
+                product: productName,
+                quantity: quantity,
+                total: quantity * 5500,
+                date: new Date().toISOString(),
+                status: 'en_camino'
+            };
+            appState.orders.unshift(newOrder);
+            
+            orderMessage.innerHTML = `
+                <div class="success">
+                    ✅ ¡Pedido #${newOrder.id} creado exitosamente!<br>
+                    Producto: ${productName}<br>
+                    Cantidad: ${quantity}<br>
+                    Puntos ganados: <strong>+${pointsEarned}</strong><br>
+                    Nuevo total: <strong>${appState.points.toLocaleString('es-AR')} puntos</strong>
+                </div>
+            `;
+            
+            document.getElementById('new-order-form').reset();
+            
+            setTimeout(() => {
+                orderMessage.innerHTML = '';
+            }, 5000);
+        });
+
+        // ==================== MÓDULO: BENEFICIOS - CANJEAR ====================
+        function redeemBenefit(benefitName, cost) {
+            if (appState.points >= cost) {
+                if (confirm(`¿Confirmar canje de "${benefitName}" por ${cost.toLocaleString('es-AR')} puntos?`)) {
+                    appState.points -= cost;
+                    document.getElementById('points-value').textContent = appState.points.toLocaleString('es-AR');
+                    
+                    alert(`🎉 ¡Beneficio canjeado exitosamente!\n\n${benefitName}\n\nPuntos restantes: ${appState.points.toLocaleString('es-AR')}`);
+                    
+                    // Recargar vista de beneficios para actualizar disponibilidad
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            } else {
+                alert('❌ No tienes suficientes puntos para este beneficio.');
+            }
+        }
+
+        // ==================== MÓDULO: NOTIFICACIONES ====================
+        function markAsRead(id) {
+            const notification = document.querySelector(`.notification-item[data-id="${id}"]`);
+            if (notification) {
+                notification.classList.remove('unread');
+                notification.classList.add('read');
+                notification.querySelector('button').disabled = true;
+                
+                appState.unreadNotifications--;
+                updateNotificationBadge();
+            }
+        }
+
+        function markAllAsRead() {
+            document.querySelectorAll('.notification-item.unread').forEach(notification => {
+                notification.classList.remove('unread');
+                notification.classList.add('read');
+                const btn = notification.querySelector('button');
+                if (btn) btn.disabled = true;
+            });
+            appState.unreadNotifications = 0;
+            updateNotificationBadge();
+            alert('✅ Todas las notificaciones marcadas como leídas');
+        }
+
+        function clearNotifications() {
+            if (confirm('¿Estás seguro de que quieres eliminar todas las notificaciones leídas?')) {
+                document.querySelectorAll('.notification-item.read').forEach(notification => {
+                    notification.remove();
+                });
+                alert('🗑️ Notificaciones leídas eliminadas');
+            }
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notification-count');
+            badge.textContent = appState.unreadNotifications;
+            if (appState.unreadNotifications === 0) {
+                badge.style.display = 'none';
+            } else {
+                badge.style.display = 'flex';
+            }
+        }
+
+        // ==================== MÓDULO: POWER BI ====================
+        document.getElementById('export-powerbi').addEventListener('click', () => {
+            const powerBiData = appState.orders.map(order => ({
+                Tienda: "Kiosco El Sol",
+                Store_ID: "101",
+                Producto: order.product,
+                Product_ID: order.id,
+                Cantidad: order.quantity,
+                Precio_Unitario: Math.round(order.total / order.quantity),
+                Total: order.total,
+                Fecha: order.date,
+                Estado: order.status
+            }));
+            
+            const powerbiDataCard = document.getElementById('powerbi-data');
+            const powerbiContent = document.getElementById('powerbi-content');
+            
+            powerbiContent.innerHTML = `
+                <div style="margin-bottom: 16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <strong>📊 Resumen:</strong><br>
+                    • Total de registros: <strong>${powerBiData.length}</strong><br>
+                    • Formato: JSON<br>
+                    • Compatible con Power BI Desktop y Power BI Service
+                </div>
+                <div style="margin-bottom: 12px; padding: 8px; background: rgba(196, 169, 98, 0.1); border-radius: 4px; font-size: 13px;">
+                    💡 <strong>Tip:</strong> Copia el JSON y pégalo en Power BI usando "Get Data > Web > Advanced"
+                </div>
+                <pre style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.5; max-height: 400px; overflow-y: auto;">
+${JSON.stringify(powerBiData, null, 2)}
+                </pre>
+            `;
+            
+            powerbiDataCard.style.display = 'block';
+            powerbiDataCard.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('copy-powerbi').addEventListener('click', async () => {
+            try {
+                const powerBiData = appState.orders.map(order => ({
+                    Tienda: "Kiosco El Sol",
+                    Store_ID: "101",
+                    Producto: order.product,
+                    Product_ID: order.id,
+                    Cantidad: order.quantity,
+                    Precio_Unitario: Math.round(order.total / order.quantity),
+                    Total: order.total,
+                    Fecha: order.date,
+                    Estado: order.status
+                }));
+                
+                await navigator.clipboard.writeText(JSON.stringify(powerBiData, null, 2));
+                
+                const btn = document.getElementById('copy-powerbi');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ ¡Copiado!';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+                
+            } catch (error) {
+                alert('Error al copiar al portapapeles');
+            }
+        });
+
+        // ==================== INICIALIZACIÓN ====================
+        function initApp() {
+            console.log('🚀 MOOVIX PRO DEMO - Iniciando...');
+            
+            // Iniciar tracking
+            startTracking();
+            
+            // Cargar pedidos iniciales
+            loadOrderHistory('todos');
+            
+            // Actualizar badge de notificaciones
+            updateNotificationBadge();
+            
+            console.log('✅ Todos los módulos cargados correctamente');
+            console.log('📊 Estado de la app:', appState);
+        }
+
+    </script>
+</body>
+</html>
